@@ -23,6 +23,7 @@
         var userName = window.location.href.match(/user=(.*?)(&|$)/);
         accNum = accNum && accNum.length ? accNum[1] : '';
         env = env && env.length ? env[1] : '';
+        userName = userName && userName.length ? userName[1] : '';
         if (env === 'qa') {
             currentEnv = lpDomains.qa;
         }
