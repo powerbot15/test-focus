@@ -20,6 +20,7 @@
         var currentEnv = {};
         var accNum = window.location.href.match(/site=(.*?)(&|$)/);
         var env = window.location.href.match(/env=(.*?)(&|$)/);
+        var userName = window.location.href.match(/user=(.*?)(&|$)/);
         accNum = accNum && accNum.length ? accNum[1] : '';
         env = env && env.length ? env[1] : '';
         if (env === 'qa') {
@@ -46,6 +47,9 @@
         var logEl = document.querySelector('.log');
         var href = document.querySelector('[data-tab-2]');
         href.href += '?site=' + accNum + '&env=' + env;
+        if (userName) {
+            href.href += '&user=' + userName;
+        } 
         window.onfocus = function () {
             if (npCalled) {
                 return;
@@ -62,30 +66,30 @@
                 'UW ' + lpTag.taglets && lpTag.taglets.lpUnifiedWindow && lpTag.taglets.lpUnifiedWindow.v
             );
         }, 2000);
+        if (userName) {
+            lpTag.identities = [];
+            lpTag.identities.push(identityFn);
+            var user = userName;
+            var usernameResult = 'lpTest' + user;
 
-        lpTag.identities = [];
-        lpTag.identities.push(identityFn);
-        var user = parseInt(Math.random() * 10000);
-        var usernameResult = 'lpTest' + user;
+            function identityFn(callback) {
+                callback({
+                    iss: "LivePerson",
+                    acr: "loa1",
+                    sub: usernameResult
+                });
+            }
 
-        function identityFn(callback) {
-            callback({
-                iss: "LivePerson",
-                acr: "loa1",
-                sub: usernameResult
-            });
-        }
+            lpTag.sdes.push({"type": "ctmrinfo", "info": {customerId: usernameResult}});
 
-        lpTag.sdes.push({"type": "ctmrinfo", "info": {customerId: usernameResult}});
+            window.LPJsMethodName = function (callback) {
+                callback(user);
+            };
 
-        window.LPJsMethodName = function (callback) {
-            callback(user);
-        };
-
-        LPGetAuthenticationToken = function (callback) {
-            callback(user);
-        }
-
+            LPGetAuthenticationToken = function (callback) {
+                callback(user);
+            }
+        } 
     })();
 </script>
 </body>
