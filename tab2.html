@@ -37,31 +37,32 @@
 
 <h2>Empty tab to start the conversation before move to first tab</h2>
 <script>
-    (function () {}) ();
-    if (userName) {
-        lpTag.identities = [];
-        lpTag.identities.push(identityFn);
-        var user = userName;
-        var usernameResult = 'lpTest' + user;
+    (function () {
+        if (userName) {
+            lpTag.identities = [];
+            lpTag.identities.push(identityFn);
+            var user = userName;
+            var usernameResult = 'lpTest' + user;
 
-        function identityFn(callback) {
-            callback({
-                iss: "LivePerson",
-                acr: "loa1",
-                sub: usernameResult
-            });
+            function identityFn(callback) {
+                callback({
+                    iss: "LivePerson",
+                    acr: "loa1",
+                    sub: usernameResult
+                });
+            }
+
+            lpTag.sdes.push({"type": "ctmrinfo", "info": {customerId: usernameResult}});
+
+            window.LPJsMethodName = function (callback) {
+                callback(user);
+            };
+
+            LPGetAuthenticationToken = function (callback) {
+                callback(user);
+            }
         }
-
-        lpTag.sdes.push({"type": "ctmrinfo", "info": {customerId: usernameResult}});
-
-        window.LPJsMethodName = function (callback) {
-            callback(user);
-        };
-
-        LPGetAuthenticationToken = function (callback) {
-            callback(user);
-        }
-    }
+    }) ();
 </script>
 </body>
 </html>
